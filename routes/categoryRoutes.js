@@ -13,7 +13,7 @@
 // module.exports = router;
 const express = require('express');
 const singleUpload = require('../middlewares/multer'); // Adjust path as necessary
-const { createCategory, getAllCategories, updateCategoryStatus, updateCategoryAttribute, deleteCategoryAttribute, addAttributeToCategory } = require('../controllers/categoryController');
+const { createCategory, getAllCategories, updateCategoryStatus, deleteCategoryAttribute, addAttributeToCategory ,updateCategoryAttribute  } = require('../controllers/categoryController');
 
 const router = express.Router();
 
