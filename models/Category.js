@@ -43,7 +43,7 @@ const categorySchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true },
   image: { type: String },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
-  featured: { type: Boolean, default: false },
+  featured:  { type: String, enum: ['active', 'inactive'], default: 'active' },
   attributes: [attributeSchema],
 });
 

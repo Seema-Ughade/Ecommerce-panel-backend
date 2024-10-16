@@ -60,6 +60,7 @@
 //   }
 // };
 // controllers/categoryController.js
+
 const Category = require('../models/Category');
 
 // Get all categories
@@ -104,6 +105,23 @@ exports.updateCategoryStatus = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+exports.updateCategoryfeatured = async (req, res) => {
+  const { featured } = req.body;
+
+  try {
+    const updatedCategoryfeatured = await Category.findByIdAndUpdate(
+      req.params.id,
+      { featured },
+      { new: true }
+    );
+    res.json(updatedCategoryfeatured);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 
 // Add attribute to category
 exports.addAttributeToCategory = async (req, res) => {

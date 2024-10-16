@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const categoryRoutes = require('../routes/categoryRoutes');
 const subCategoryRoutes = require('../routes/subCategoryRoutes');
+const BlogcategoryRoutes = require('../routes/BlogcategoryRoutes');
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads')); // Serve uploaded images
 app.use('/api/categories', categoryRoutes); // Routes for categories
 app.use('/api/subcategories', subCategoryRoutes);
+app.use('/api/Blogcategories', BlogcategoryRoutes);
+
 
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}`);
