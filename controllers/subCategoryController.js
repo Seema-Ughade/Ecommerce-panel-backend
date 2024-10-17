@@ -4,11 +4,13 @@ const SubCategory = require('../models/SubCategory');
 const getAllSubCategories = async (req, res) => {
   try {
     const subCategories = await SubCategory.find();
-    res.status(200).json({ subCategories });
+    res.json(subCategories);
+
   } catch (error) {
     res.status(500).json({ message: 'Error fetching subcategories', error });
   }
 };
+
 
 // Create a new subcategory
 const createSubCategory = async (req, res) => {
@@ -62,9 +64,80 @@ const deleteSubCategory = async (req, res) => {
   }
 };
 
+// Add an attribute to a subcategory
+const addAttributeToCategory = async (req, res) => {
+  const { name, option, allowPriceField, showOnDetailsPage } = req.body;
+
+  try {
+    const subCategory = await SubCategory.findById(req.params.SubCategoryId);
+    if (!subCategory) {
+      return res.status(404).json({ message: "Subcategory not found" });
+    }
+    subCategory.attributes.push({ name, option, allowPriceField, showOnDetailsPage });
+    await subCategory.save();
+    res.status(201).json(subCategory);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Update an attribute within a subcategory
+const updateCategoryAttribute = async (req, res) => {
+  const { name, option, allowPriceField, showOnDetailsPage } = req.body;
+
+  try {
+    const subCategory = await SubCategory.findById(req.params.SubCategoryId);
+    if (!subCategory) {
+      return res.status(404).json({ message: "Subcategory not found" });
+    }
+
+    const attribute = subCategory.attributes.id(req.params.attributeId);
+    if (!attribute) {
+      return res.status(404).json({ message: "Attribute not found" });
+    }
+
+    // Update the attribute fields
+    attribute.name = name;
+    attribute.option = option;
+    attribute.allowPriceField = allowPriceField;
+    attribute.showOnDetailsPage = showOnDetailsPage;
+
+    await subCategory.save();
+    res.status(200).json(subCategory);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Delete an attribute from a subcategory
+const deleteCategoryAttribute = async (req, res) => {
+  try {
+    const subCategory = await SubCategory.findById(req.params.SubCategoryId);
+    if (!subCategory) {
+      return res.status(404).json({ message: "Subcategory not found" });
+    }
+
+    const attribute = subCategory.attributes.id(req.params.attributeId);
+    if (!attribute) {
+      return res.status(404).json({ message: "Attribute not found" });
+    }
+
+    // Remove the attribute
+    attribute.remove();
+    await subCategory.save();
+    res.status(200).json(subCategory);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Export all functions
 module.exports = {
   getAllSubCategories,
   createSubCategory,
   updateSubCategory,
   deleteSubCategory,
+  addAttributeToCategory,
+  updateCategoryAttribute,
+  deleteCategoryAttribute
 };

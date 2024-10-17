@@ -62,7 +62,42 @@
 // controllers/categoryController.js
 
 const Category = require('../models/Category');
+const cloudinary = require('../middlewares/cloudinaryConfig');
 
+// Create a new category
+exports.createCategory = async (req, res) => {
+  try {
+    // Destructure name and slug from the request body
+    const { name, slug } = req.body;
+
+    // Initialize variable for the image URL
+    let imageUrl = null;
+
+    // Check if there is a file to upload
+    if (req.file) {
+      // Upload the image to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url; // Get the secure URL from the upload result
+    }
+
+    // Create a new category instance
+    const newCategory = new Category({
+      name,
+      slug,
+      image: imageUrl, // Use the Cloudinary image URL if available
+    });
+
+    // Save the new category to the database
+    const savedCategory = await newCategory.save();
+    
+    // Send a 201 Created response with the saved category data
+    res.status(201).json(savedCategory);
+  } catch (error) {
+    // Log the error and send a 500 Internal Server Error response
+    console.error('Error adding category:', error);
+    res.status(500).json({ message: 'Error adding category' });
+  }
+};
 // Get all categories
 exports.getAllCategories = async (req, res) => {
   try {
@@ -73,22 +108,42 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-// Create a new category
-exports.createCategory = async (req, res) => {
-  const { name, slug } = req.body;
-  const newCategory = new Category({
-    name,
-    slug,
-    image: req.file ? req.file.path : null,
-  });
-
+exports.deleteCategory = async (req, res) => {
+  const { id } = req.params; // Get the category ID from the request parameters
   try {
-    const savedCategory = await newCategory.save();
-    res.status(201).json(savedCategory);
+    // Find the category by ID and delete it
+    const deletedCategory = await Category.findByIdAndDelete(id);
+    
+    // Check if the category was found and deleted
+    if (!deletedCategory) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    // Send a success response
+    res.status(200).json({ message: 'Category deleted successfully' });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    // Handle errors and send an appropriate response
+    console.error('Error deleting category:', error);
+    res.status(500).json({ message: 'Error deleting category' });
   }
 };
+
+// Create a new category
+// exports.createCategory = async (req, res) => {
+//   const { name, slug } = req.body;
+//   const newCategory = new Category({
+//     name,
+//     slug,
+//     image: req.file ? req.file.path : null,
+//   });
+
+//   try {
+//     const savedCategory = await newCategory.save();
+//     res.status(201).json(savedCategory);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
 
 // Update category status
 exports.updateCategoryStatus = async (req, res) => {
