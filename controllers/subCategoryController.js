@@ -64,6 +64,22 @@ const deleteSubCategory = async (req, res) => {
   }
 };
 
+// Update category status
+const updateSubCategoryStatus = async (req, res) => {
+  const { status } = req.body;
+  console.log(`Updating subcategory ID: ${req.params.id} with status: ${status}`); // Add this line for debugging
+  try {
+    const updatedSubCategory = await SubCategory.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!updatedSubCategory) {
+      return res.status(404).json({ message: 'Subcategory not found' });
+    }
+    res.json(updatedSubCategory);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+
 // Add an attribute to a subcategory
 const addAttributeToCategory = async (req, res) => {
   const { name, option, allowPriceField, showOnDetailsPage } = req.body;
@@ -139,5 +155,6 @@ module.exports = {
   deleteSubCategory,
   addAttributeToCategory,
   updateCategoryAttribute,
-  deleteCategoryAttribute
+  deleteCategoryAttribute,
+  updateSubCategoryStatus
 };

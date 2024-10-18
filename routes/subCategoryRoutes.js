@@ -7,7 +7,8 @@ const {
   deleteSubCategory,
   addAttributeToCategory,
   deleteCategoryAttribute,
-  updateCategoryAttribute
+  updateCategoryAttribute,
+  updateSubCategoryStatus
 } = require('../controllers/subCategoryController');
 
 // Routes
@@ -16,6 +17,8 @@ router.post('/', createSubCategory);
 router.put('/:id', updateSubCategory); // For updating a subcategory
 router.delete('/:id', deleteSubCategory); // For deleting a subcategory
 router.post('/:SubCategoryId/attributes', addAttributeToCategory);
+
+router.put('/:id/status', updateSubCategoryStatus);
 
 // Route to update an attribute in a category
 router.patch('/:subcategoryId/attributes/:attributeId', updateCategoryAttribute);
