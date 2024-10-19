@@ -45,6 +45,9 @@ const categorySchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },
   featured:  { type: String, enum: ['active', 'inactive'], default: 'active' },
   attributes: [attributeSchema],
+}, 
+{
+  timestamps: true // Add timestamps to include createdAt and updatedAt fields
 });
 
 const Category = mongoose.model('Category', categorySchema);
