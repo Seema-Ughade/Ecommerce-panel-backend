@@ -7,6 +7,7 @@ const subCategoryRoutes = require('../routes/subCategoryRoutes');
 const BlogcategoryRoutes = require('../routes/BlogcategoryRoutes');
 const childCategoryRoutes = require('../routes/childCategoryRoutes');
 const productRoutes = require('../routes/productRoutes');
+const DigitalProductRoutes = require('../routes/DigitalProductRoutes');
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.use('/api/subcategories', subCategoryRoutes);
 app.use('/api/Blogcategories', BlogcategoryRoutes);
 app.use('/api/childcategories', childCategoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/Digitalproducts', DigitalProductRoutes);
+
 
 
 app.listen(port, hostname, () => {
