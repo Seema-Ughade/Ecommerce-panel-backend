@@ -1,12 +1,29 @@
-// models/Product.js
+// models/DigitalProduct.js
 const mongoose = require('mongoose');
 
-const ProductSchema = new mongoose.Schema({
+const featureTagSchema = new mongoose.Schema({
+    tag: {
+        type: String,
+        required: true, // This ensures that the tag is required
+    },
+    color: {
+        type: String,
+        required: true, // This ensures that the color is required
+        validate: {
+            validator: function(v) {
+                // Optional: Validate color format (e.g., hex code)
+                return /^#[0-9A-F]{6}$/i.test(v);
+            },
+            message: props => `${props.value} is not a valid hex color!`
+        }
+    }
+});
+
+const digitalProductSchema = new mongoose.Schema({
     productName: { type: String, required: true },
-    sku: { type: String, required: true },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
-    subCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory', required: true },
-    childCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'ChildCategory', required: true },
+    category: { type: String, required: true },
+    subCategory: { type: String, required: true },
+    childCategory: { type: String, required: true },
     stock: { type: Number, required: true },
     description: { type: String, required: true },
     buyReturnPolicy: { type: String, required: true },
@@ -14,13 +31,14 @@ const ProductSchema = new mongoose.Schema({
     discountPrice: { type: Number },
     youtubeUrl: { type: String },
     tags: [{ type: String }],
-    featureImage: { type: String, required: true },
-    galleryImages: [{ type: String }],
-    featureTags: [{ tag: String, color: String }],
+    featureTags: [featureTagSchema],
     allowProductSEO: { type: Boolean, default: false },
     allowProductCondition: { type: Boolean, default: false },
     allowProductPreorder: { type: Boolean, default: false },
     manageStock: { type: Boolean, default: false },
+    featureImage: { type: String },
+    galleryImages: [{ type: String }],
 }, { timestamps: true });
 
-module.exports = mongoose.model('DigitalProduct', ProductSchema);
+const Product = mongoose.model('DigitalProduct', digitalProductSchema);
+module.exports = Product;

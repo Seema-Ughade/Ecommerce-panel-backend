@@ -8,6 +8,7 @@ const BlogcategoryRoutes = require('../routes/BlogcategoryRoutes');
 const childCategoryRoutes = require('../routes/childCategoryRoutes');
 const productRoutes = require('../routes/productRoutes');
 const DigitalProductRoutes = require('../routes/DigitalProductRoutes');
+const postRoutes = require('../routes/postRoutes');
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use('/api/Blogcategories', BlogcategoryRoutes);
 app.use('/api/childcategories', childCategoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/Digitalproducts', DigitalProductRoutes);
+app.use('/api/posts', postRoutes); // Use post routes
 
 
 

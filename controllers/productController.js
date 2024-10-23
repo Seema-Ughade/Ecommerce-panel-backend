@@ -1,4 +1,4 @@
-const Product = require('../models/DigitalProduct');
+const Product = require('../models/Product');
 const cloudinary = require('../middlewares/cloudinaryConfig');
 const getDataUri = require("../utils/dataUri");
 
