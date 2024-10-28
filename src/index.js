@@ -10,6 +10,13 @@ const productRoutes = require('../routes/productRoutes');
 const DigitalProductRoutes = require('../routes/DigitalProductRoutes');
 const postRoutes = require('../routes/postRoutes');
 const socialLinksRoutes = require('../routes/socialLinksRoutes');
+const shippingMethodsRouter = require('../routes/shippingMethodsRoutes');
+const packagingRoutes = require('../routes/packagingRoutes');
+const pickupLocationsRoutes = require('../routes/pickupLocationsRoutes');
+const sliderRoutes = require('../routes/sliderRoutes');
+const serviceRoutes = require('../routes/serviceRoutes');
+const partnerRoutes = require('../routes/partnerRoutes');
+const faqRoutes = require('../routes/faqRoutes');
 
 dotenv.config();
 
@@ -35,6 +42,13 @@ app.use('/api/products', productRoutes);
 app.use('/api/Digitalproducts', DigitalProductRoutes);
 app.use('/api/posts', postRoutes); // Use post routes
 app.use('/api/social-links', socialLinksRoutes);
+app.use('/api/shipping-methods', shippingMethodsRouter);
+app.use('/api/packagings', packagingRoutes);
+app.use('/api/pickup-locations', pickupLocationsRoutes);
+app.use('/api/sliders', sliderRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/partners', partnerRoutes);
+app.use('/api/faqs', faqRoutes);
 
 
 
