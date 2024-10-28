@@ -3,7 +3,7 @@ const express = require('express');
 const serviceController = require('../controllers/serviceController');
 
 const router = express.Router();
-const singleUpload = require('../middlewares/imageMulter'); // Adjust path as necessary
+const singleUpload = require('../middlewares/ImageMulter.js'); // Adjust path as necessary
 
 router.get('/', serviceController.getAllServices);
 router.post('/', singleUpload, serviceController.createService);

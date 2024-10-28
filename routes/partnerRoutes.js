@@ -2,7 +2,7 @@ const express = require('express');
 const partnerController = require('../controllers/partnerController');
 
 const router = express.Router();
-const singleUpload = require('../middlewares/imageMulter'); // Adjust path as necessary
+const singleUpload = require('../middlewares/ImageMulter.js'); // Adjust path as necessary
 
 // Define routes
 router.get('/', partnerController.getAllPartners);

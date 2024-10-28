@@ -1,7 +1,7 @@
 // routes/sliderRoutes.js
 const express = require('express');
 const router = express.Router();
-const singleUpload = require('../middlewares/imageMulter'); // Adjust path as necessary
+const singleUpload = require('../middlewares/ImageMulter.js'); // Adjust path as necessary
 
 const { createSlider, updateSlider, deleteSlider, getAllSliders } = require('../controllers/sliderController');
 
