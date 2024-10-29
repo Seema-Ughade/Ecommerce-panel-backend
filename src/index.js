@@ -17,6 +17,8 @@ const sliderRoutes = require('../routes/sliderRoutes');
 const serviceRoutes = require('../routes/serviceRoutes');
 const partnerRoutes = require('../routes/partnerRoutes');
 const faqRoutes = require('../routes/faqRoutes');
+const pageRoutes = require('../routes/pageRoutes');
+const paymentGatewayRoutes = require('../routes/paymentGatewayRoutes');
 
 dotenv.config();
 
@@ -49,6 +51,8 @@ app.use('/api/sliders', sliderRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/partners', partnerRoutes);
 app.use('/api/faqs', faqRoutes);
+app.use('/api/pages', pageRoutes);
+app.use('/api/payment-gateways', paymentGatewayRoutes);
 
 
 

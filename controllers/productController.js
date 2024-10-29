@@ -8,69 +8,131 @@ const getDataUri = require("../utils/dataUri");
 
 // Create a new product
 exports.createProduct = async (req, res) => {
-    try {
-        // Extract product data from the request body
-        const { productName, sku, category, subCategory, childCategory, ...otherData } = req.body;
-        console.log('Incoming Product Data:', req.body);
+  try {
+      // Destructure the incoming request body
+      const {
+          productName,
+          sku,
+          category,
+          subCategory,
+          childCategory,
+          allowProductCondition,
+          productCondition,
+          allowProductPreorder,
+          productPreorder,
+          allowMinimumOrderQty,
+          minimumOrderQty,
+          manageStock,
+          stockQuantity,
+          allowEstimatedShippingTime,
+          estimatedShippingTime,
+          allowProductWholeSell,
+          wholeSellEntries,
+          allowProductMeasurement,
+          productMeasurement,
+          allowProductColors,
+          colors,
+          stock,
+          description,
+          buyReturnPolicy,
+          allowProductSEO,
+          price,
+          discountPrice,
+          youtubeUrl,
+          tags,
+          featureTags, // Get featureTags directly
+      } = req.body;
 
+      // Log the incoming product data
+      console.log('Incoming Product Data:', req.body);
 
-        let parsedFeatureTags = [];
-        if (req.body.featureTags) {
-            // If featureTags is an array of JSON strings, parse each one
-            if (Array.isArray(req.body.featureTags)) {
-                parsedFeatureTags = req.body.featureTags.map(tag => JSON.parse(tag));
-            } else {
-                // If it's a single JSON string, parse it
-                parsedFeatureTags.push(JSON.parse(featureTags));
-            }
-        }
-        let featureImageUrl = null;
-        let galleryImagesUrls = [];
-    
-        // Check if a feature image is uploaded
-        if (req.files && req.files.featureImage) {
-          const featureImage = req.files.featureImage[0];
-          const fileUri = getDataUri(featureImage).content; // Convert to Data URI
-    
-          // Upload the feature image to Cloudinary
-          const featureImageResult = await cloudinary.uploader.upload(fileUri, {
-            resource_type: 'auto',
+      // Validate the inputs
+      if (!req.files || !req.files.featureImage) {
+          return res.status(400).json({ message: 'Feature image is required.' });
+      }
+      if (description.length < 10) {
+          return res.status(400).json({ message: 'Description must be at least 10 characters long.' });
+      }
+      if (buyReturnPolicy.length < 10) {
+          return res.status(400).json({ message: 'Buy return policy must be at least 10 characters long.' });
+      }
+      const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+      if (!youtubeRegex.test(youtubeUrl)) {
+          return res.status(400).json({ message: 'Invalid YouTube URL.' });
+      }
+      
+      // Validate featureTags
+      let parsedFeatureTags = [];
+      if (Array.isArray(featureTags)) {
+          parsedFeatureTags = featureTags.map(tag => {
+              if (!tag.tag || !tag.color) {
+                  throw new Error('Each feature tag must include a tag and a color.');
+              }
+              return tag; // Assume it's already an object
           });
-          featureImageUrl = featureImageResult.secure_url; // Get the secure URL from Cloudinary response
-        }
-    
-        // Check if there are gallery images uploaded
-        if (req.files && req.files.galleryImages) {
+      }
+
+      // Process images
+      let featureImageUrl = null;
+      let galleryImagesUrls = [];
+      
+      const featureImage = req.files.featureImage[0];
+      const fileUri = getDataUri(featureImage).content;
+      const featureImageResult = await cloudinary.uploader.upload(fileUri, { resource_type: 'auto' });
+      featureImageUrl = featureImageResult.secure_url;
+
+      // Gallery images processing (if applicable)
+      if (req.files && req.files.galleryImages) {
           galleryImagesUrls = await Promise.all(req.files.galleryImages.map(async (image) => {
-            const fileUri = getDataUri(image).content; // Convert to Data URI
-            const result = await cloudinary.uploader.upload(fileUri, {
-              resource_type: 'auto',
-            });
-            return result.secure_url; // Get the secure URL from Cloudinary response
+              const fileUri = getDataUri(image).content;
+              const result = await cloudinary.uploader.upload(fileUri, { resource_type: 'auto' });
+              return result.secure_url;
           }));
-        }
-    
-            // Create a new product instance
-        const product = new Product({
-            productName,
-            sku,
-            category,
-            subCategory,
-            childCategory,
-            featureImageUrl,
-            galleryImagesUrls,
-                  featureTags: parsedFeatureTags, // Use parsed feature tags
-            // Parse feature tags if provided
+      }
 
-            ...otherData, // Spread other fields
-        });
+      // Create product instance
+      const product = new Product({
+          productName,
+          sku,
+          category,
+          subCategory,
+          childCategory,
+          allowProductCondition,
+          productCondition,
+          allowProductPreorder,
+          productPreorder,
+          allowMinimumOrderQty,
+          minimumOrderQty,
+          manageStock,
+          stockQuantity,
+          allowEstimatedShippingTime,
+          estimatedShippingTime,
+          allowProductWholeSell,
+          wholeSellEntries: JSON.parse(wholeSellEntries),
+          allowProductMeasurement,
+          productMeasurement,
+          allowProductColors,
+          colors: JSON.parse(colors),
+          stock,
+          description,
+          buyReturnPolicy,
+          allowProductSEO,
+          featureImage: featureImageUrl,
+          galleryImages: galleryImagesUrls,
+          price,
+          discountPrice,
+          youtubeUrl,
+          featureTags: parsedFeatureTags,
+          tags,
+      });
 
-        await product.save(); // Save the product to the database
-        res.status(201).json({ message: 'Product created successfully', product }); // Respond with success message
-    } catch (error) {
-        console.error('Error creating product:', error.message); // Log error message
-        res.status(500).json({ message: 'Error creating product', error }); // Respond with error message
-    }
+      // Save product to the database
+      await product.save();
+      res.status(201).json({ message: 'Product created successfully', product });
+  } catch (error) {
+      console.error('Error creating product:', error.message);
+      res.status(500).json({ message: 'Error creating product', error });
+  }
 };
 exports.getAllProducts = async (req, res) => {
   try {
