@@ -1,5 +1,5 @@
 const express = require('express');
-const singleUpload = require('../middlewares/multer'); // Adjust path as necessary
+const singleUpload = require('../middlewares/ImageMulter'); // Adjust path as necessary
 const { createCategory, getAllCategories, updateCategory, deleteCategory, updateCategoryStatus, updateCategoryfeatured, deleteCategoryAttribute, addAttributeToCategory ,updateCategoryAttribute  } = require('../controllers/categoryController');
 
 const router = express.Router();
