@@ -19,6 +19,10 @@ const partnerRoutes = require('../routes/partnerRoutes');
 const faqRoutes = require('../routes/faqRoutes');
 const pageRoutes = require('../routes/pageRoutes');
 const paymentGatewayRoutes = require('../routes/paymentGatewayRoutes');
+const currencyRoutes = require('../routes/currencyRoutes');
+const fontRoutes = require('../routes/fontRoutes');
+const roleRoutes = require('../routes/roleRoutes');
+const staffRoutes = require('../routes/staffRoutes');
 
 dotenv.config();
 
@@ -53,6 +57,10 @@ app.use('/api/partners', partnerRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/pages', pageRoutes);
 app.use('/api/payment-gateways', paymentGatewayRoutes);
+app.use('/api/currencies', currencyRoutes);
+app.use('/api/fonts', fontRoutes);
+app.use('/api/roles', roleRoutes);
+app.use('/api/staffs', staffRoutes);
 
 
 
