@@ -23,6 +23,7 @@ const currencyRoutes = require('../routes/currencyRoutes');
 const fontRoutes = require('../routes/fontRoutes');
 const roleRoutes = require('../routes/roleRoutes');
 const staffRoutes = require('../routes/staffRoutes');
+const couponRoutes = require('../routes/couponRoutes');
 
 dotenv.config();
 
@@ -61,6 +62,7 @@ app.use('/api/currencies', currencyRoutes);
 app.use('/api/fonts', fontRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/staffs', staffRoutes);
+app.use('/api/coupons', couponRoutes);
 
 
 
