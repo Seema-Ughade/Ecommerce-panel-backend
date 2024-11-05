@@ -14,12 +14,8 @@ exports.createCoupon = async (req, res) => {
 // Get all coupons with pagination
 exports.getCoupons = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
-    const coupons = await Coupon.find()
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
-    const total = await Coupon.countDocuments();
-    res.json({ total, page, coupons });
+    const coupons = await Coupon.find(); // Retrieve all coupons
+    res.json({ total: coupons.length, coupons }); // Return total count and coupons
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

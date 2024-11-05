@@ -24,6 +24,10 @@ const fontRoutes = require('../routes/fontRoutes');
 const roleRoutes = require('../routes/roleRoutes');
 const staffRoutes = require('../routes/staffRoutes');
 const couponRoutes = require('../routes/couponRoutes');
+const authRoutes = require('../routes/authRoutes');
+const cityRoutes = require('../routes/cityRoutes');
+const statesRoutes = require('../routes/statesRoutes');
+
 
 dotenv.config();
 
@@ -63,6 +67,9 @@ app.use('/api/fonts', fontRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/staffs', staffRoutes);
 app.use('/api/coupons', couponRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api', cityRoutes);
+app.use('/api/states', statesRoutes);
 
 
 
