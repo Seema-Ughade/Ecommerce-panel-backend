@@ -24,20 +24,41 @@ const digitalProductSchema = new mongoose.Schema({
     category: { type: String, required: true },
     subCategory: { type: String, required: true },
     childCategory: { type: String, required: true },
-    stock: { type: Number, required: true },
     description: { type: String, required: true },
     buyReturnPolicy: { type: String, required: true },
     price: { type: Number, required: true },
     discountPrice: { type: Number },
     youtubeUrl: { type: String },
     tags: [{ type: String }],
-    featureTags: [featureTagSchema],
+    featureTags: [
+        {
+            tag: { type: String, required: true },
+            color: { type: String, required: true }
+        }
+    ],
     allowProductSEO: { type: Boolean, default: false },
-    allowProductCondition: { type: Boolean, default: false },
-    allowProductPreorder: { type: Boolean, default: false },
-    manageStock: { type: Boolean, default: false },
-    featureImage: { type: String },
-    galleryImages: [{ type: String }],
+    featureImage: {
+        type: String,
+        required: true,
+    },
+    featureImagePublicId: {
+        type: String, // For storing the Cloudinary public ID, if applicable
+    },
+    galleryImages: [{
+        imageUrl: {
+            type: String,
+            required: true, // Each image URL is required
+        },
+        publicId: {
+            type: String, // Optional: for storing Cloudinary public ID
+        },
+    }],
+    uploadType: { 
+        type: String, 
+        enum: ['file', 'link'], 
+        required: true 
+    },
+
 }, { timestamps: true });
 
 const Product = mongoose.model('DigitalProduct', digitalProductSchema);

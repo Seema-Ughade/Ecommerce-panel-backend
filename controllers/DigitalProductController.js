@@ -1,67 +1,72 @@
 // controllers/productController.js
-const Product = require('../models/DigitalProduct');
+const DigitalProduct = require('../models/DigitalProduct');
 const cloudinary = require('../middlewares/cloudinaryConfig');
 const getDataUri = require("../utils/dataUri");
 
 // Create Product
-exports.createProduct = async (req, res) => {
+exports.createDigitalProduct = async (req, res) => {
     try {
         const {
-            productName,  category, subCategory, childCategory,
-            description, buyReturnPolicy, price, discountPrice,
-            youtubeUrl, tags, featureTags, allowProductSEO,
-            allowProductCondition, allowProductPreorder, manageStock
-        } = req.body;
-
-        // Handle feature image upload
-        let featureImage = null;
-        if (req.files?.featureImage) {
-            const fileUri = getDataUri(req.files.featureImage[0]).content;
-            const result = await cloudinary.uploader.upload(fileUri, { resource_type: 'auto' });
-            featureImage = result.secure_url;
-        }
-
-        // Handle gallery images upload
-        let galleryImages = [];
-        if (req.files?.galleryImages) {
-            const uploadPromises = req.files.galleryImages.map(file => {
-                const fileUri = getDataUri(file).content;
-                return cloudinary.uploader.upload(fileUri, { resource_type: 'auto' });
-            });
-            const results = await Promise.all(uploadPromises);
-            galleryImages = results.map(result => result.secure_url);
-        }
-
-        // Initialize tags as an array if not provided
-        const tagsArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
-
-        // Create new product
-        const newProduct = new Product({
             productName,
             category,
             subCategory,
             childCategory,
+            uploadType,
             description,
             buyReturnPolicy,
+            allowProductSEO,
             price,
             discountPrice,
             youtubeUrl,
-            tags: tagsArray,
+            tags,
             featureTags,
+        } = req.body;
+
+        // Handle image upload based on the upload type
+        let featureImageUrl = '';
+        if (uploadType === 'file' && req.files && req.files.featureImage) {
+            const featureImageUpload = await cloudinary.uploader.upload(req.files.featureImage.path);
+            featureImageUrl = featureImageUpload.secure_url;
+        } else if (uploadType === 'link' && req.body.featureImageUrl) {
+            featureImageUrl = req.body.featureImageUrl; // The URL entered by the user
+        }
+
+        // Handle gallery images upload
+        let galleryImages = [];
+        if (uploadType === 'file' && req.files && req.files.galleryImages) {
+            for (const file of req.files.galleryImages) {
+                const upload = await cloudinary.uploader.upload(file.path);
+                galleryImages.push(upload.secure_url);
+            }
+        } else if (uploadType === 'link' && req.body.galleryImageUrls) {
+            galleryImages = req.body.galleryImageUrls.split(',').map(url => url.trim()); // Process multiple URLs
+        }
+
+        // Create the product
+        const newProduct = new DigitalProduct({
+            productName,
+            category,
+            subCategory,
+            childCategory,
+            uploadType,
+            description,
+            buyReturnPolicy,
             allowProductSEO,
-            allowProductCondition,
-            allowProductPreorder,
-            manageStock,
-            featureImage,
-            galleryImages
+            price,
+            discountPrice,
+            youtubeUrl,
+            tags: tags.split(',').map(tag => tag.trim()),
+            featureTags: featureTags,
+            featureImage: featureImageUrl,
+            galleryImages: galleryImages
         });
 
         // Save the product to the database
         await newProduct.save();
         res.status(201).json({ message: 'Product created successfully', product: newProduct });
     } catch (error) {
-        console.error('Error creating product:', error.message);
-        res.status(500).json({ message: 'Error creating product', error: error.message });
+        console.error(error);
+        res.status(500).json({ message: 'Error creating product', error });
     }
 };
 

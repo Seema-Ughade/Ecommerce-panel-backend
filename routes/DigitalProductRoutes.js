@@ -5,7 +5,7 @@ const productController = require('../controllers/DigitalProductController');
 const upload = require('../middlewares/MultiImagemulter'); // Assuming this is your multer setup
 
 // Create product
-router.post('/', upload, productController.createProduct);
+router.post('/', upload, productController.createDigitalProduct);
 
 // Other routes can be added here (GET, PUT, DELETE, etc.)
 
