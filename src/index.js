@@ -27,6 +27,7 @@ const couponRoutes = require('../routes/couponRoutes');
 const authRoutes = require('../routes/authRoutes');
 const cityRoutes = require('../routes/cityRoutes');
 const statesRoutes = require('../routes/statesRoutes');
+const customerRoutes = require('../routes/customerRoutes');
 
 
 dotenv.config();
@@ -70,6 +71,7 @@ app.use('/api/coupons', couponRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api', cityRoutes);
 app.use('/api/states', statesRoutes);
+app.use('/api/customers', customerRoutes);
 
 
 
