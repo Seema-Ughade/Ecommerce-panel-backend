@@ -28,6 +28,7 @@ const authRoutes = require('../routes/authRoutes');
 const cityRoutes = require('../routes/cityRoutes');
 const statesRoutes = require('../routes/statesRoutes');
 const customerRoutes = require('../routes/customerRoutes');
+const orderRoutes = require('../routes/orderRoutes');
 
 
 dotenv.config();
