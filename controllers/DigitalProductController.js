@@ -3,8 +3,6 @@ const DigitalProduct = require('../models/DigitalProduct');
 const cloudinary = require('../middlewares/cloudinaryConfig');
 const getDataUri = require("../utils/dataUri");
 
-// Create Product
-// controllers/productController.js
 
 // Create Product
 exports.createDigitalProduct = async (req, res) => {
