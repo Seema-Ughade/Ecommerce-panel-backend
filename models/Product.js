@@ -1,27 +1,5 @@
 const mongoose = require('mongoose');
 
-const featureTagSchema = new mongoose.Schema({
-    featureTags: [
-        {
-            tag: {
-                type: String,
-                required: true, // Assuming the feature tag is required
-                trim: true, // Removes whitespace from both ends
-            },
-            color: {
-                type: String,
-                required: true, // Assuming the color is also required
-                validate: {
-                    validator: function(v) {
-                        // Validate color format (hex, rgba, etc.)
-                        return /^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(v) || /^rgba?\((\d{1,3},\s?){2}\d{1,3}(,\s?(0|1|0?\.\d+))?\)$/.test(v);
-                    },
-                    message: props => `${props.value} is not a valid color format!`
-                }
-            }
-        }
-    ]
-});
 const productSchema = new mongoose.Schema({
     productName: {
         type: String,
