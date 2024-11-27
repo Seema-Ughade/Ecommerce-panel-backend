@@ -12,7 +12,7 @@ exports.createDigitalProduct = async (req, res) => {
             category,
             subCategory,
             childCategory,
-            imageUploadMethod,  // Main upload method (file or link)
+            imageURL,  // Main upload method (file or link)
             description,
             buyReturnPolicy,
             allowProductSEO,
@@ -21,35 +21,62 @@ exports.createDigitalProduct = async (req, res) => {
             youtubeUrl,
             tags,
             featureTags,
-            featureImageUrl,  // URL for feature image if 'link' upload method is selected
-            galleryImageUrls,  // URLs for gallery images if 'link' upload method is selected
         } = req.body;
 
-        // Handle feature image upload based on the selected method
-        let featureImageUrlFinal = '';
-        if (imageUploadMethod === 'file' && req.files && req.files.featureImage) {
-            // Upload feature image file
-            const featureImageUpload = await cloudinary.uploader.upload(req.files.featureImage.path);
-            featureImageUrlFinal = featureImageUpload.secure_url;
-        } else if (imageUploadMethod === 'link' && featureImageUrl) {
-            // Use the URL for feature image if the upload method is 'link'
-            featureImageUrlFinal = featureImageUrl;
+        let featureImageUrl = null;
+        let galleryImagesUrls = [];
+    
+        // Check if a feature image is uploaded
+        if (req.files && req.files.featureImage) {
+          const featureImage = req.files.featureImage[0];
+          const fileUri = getDataUri(featureImage).content; // Convert to Data URI
+    
+          // Upload the feature image to Cloudinary
+          const featureImageResult = await cloudinary.uploader.upload(fileUri, {
+            resource_type: 'auto',
+          });
+          featureImageUrl = featureImageResult.secure_url; // Get the secure URL from Cloudinary response
+        }
+    
+        // Check if there are gallery images uploaded
+        if (req.files && req.files.galleryImages) {
+          galleryImagesUrls = await Promise.all(req.files.galleryImages.map(async (image) => {
+            const fileUri = getDataUri(image).content; // Convert to Data URI
+            const result = await cloudinary.uploader.upload(fileUri, {
+              resource_type: 'auto',
+            });
+            return result.secure_url; // Get the secure URL from Cloudinary response
+          }));
         }
 
-        // Handle gallery images upload based on the selected method
-        let galleryImages = [];
-        if (imageUploadMethod === 'file' && req.files && req.files.galleryImages) {
-            // Upload multiple gallery images if method is 'file'
-            for (const file of req.files.galleryImages) {
-                const upload = await cloudinary.uploader.upload(file.path);
-                galleryImages.push(upload.secure_url);
-            }
-        } else if (imageUploadMethod === 'link' && galleryImageUrls) {
-            // Use gallery image URLs if the upload method is 'link'
-            galleryImages = galleryImageUrls.split(',').map(url => url.trim());
-        }
 
-        // Handle tags input (convert string to array)
+        if (req.file) {
+            const dataUri = getDataUri(req.file);
+            const result = await cloudinary.uploader.upload(dataUri.content);
+            const newImage = await Image.create({
+              imagePath: result.secure_url,
+              uploadType: "file",
+            });
+            return res.status(200).json({
+              message: "Image uploaded successfully",
+              data: newImage,
+            });
+          } else if (imageURL) {
+            const result = await cloudinary.uploader.upload(imageURL);
+            const newImage = await Image.create({
+              imagePath: result.secure_url,
+              uploadType: "link",
+              imageURL,
+            });
+            return res.status(200).json({
+              message: "Image URL processed successfully",
+              data: newImage,
+            });
+          } else {
+            return res.status(400).json({ message: "No file or URL provided" });
+          }
+      
+            // Handle tags input (convert string to array)
         const tagList = tags ? tags.split(',').map(tag => tag.trim()) : [];
 
         // Create a new DigitalProduct object
@@ -67,9 +94,9 @@ exports.createDigitalProduct = async (req, res) => {
             youtubeUrl,
             tags: tagList,
             featureTags,
-            featureImage: featureImageUrlFinal,
-            galleryImages: galleryImages
-        });
+            featureImageUrl,
+            galleryImagesUrls,
+              });
 
         // Save the new product to the database
         await newProduct.save();

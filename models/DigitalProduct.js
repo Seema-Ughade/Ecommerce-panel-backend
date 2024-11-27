@@ -41,24 +41,22 @@ const digitalProductSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    featureImagePublicId: {
-        type: String, // For storing the Cloudinary public ID, if applicable
-    },
-    galleryImages: [{
-        imageUrl: {
-            type: String,
-            required: true, // Each image URL is required
-        },
-        publicId: {
-            type: String, // Optional: for storing Cloudinary public ID
-        },
-    }],
-    uploadType: { 
-        type: String, 
-        enum: ['file', 'link'], 
-        required: true 
-    },
-
+    featureImageUrl: { type: String, required: true },
+    galleryImagesUrls: [String], // An array of image URLs for the gallery images
+    imagePath: {
+        type: String,
+        required: true,
+      },
+      uploadType: {
+        type: String,
+        enum: ["file", "link"],
+        required: true,
+      },
+      imageURL: {
+        type: String,
+        default: "",
+      },
+  
 }, { timestamps: true });
 
 const Product = mongoose.model('DigitalProduct', digitalProductSchema);
