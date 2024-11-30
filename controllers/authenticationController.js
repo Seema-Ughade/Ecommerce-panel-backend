@@ -9,7 +9,7 @@ const login = async (req, res) => {
     // Check if the user exists and populate role with permissions
     const staff = await Staff.findOne({ email }).populate({
       path: 'role',
-      select: 'name permissions' // Assuming role has `permissions` field
+      select: 'permissions' // Only select the permissions field from the role
     });
 
     if (!staff) {
