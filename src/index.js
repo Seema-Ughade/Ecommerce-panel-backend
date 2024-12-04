@@ -6,7 +6,10 @@ const categoryRoutes = require('../routes/categoryRoutes');
 const subCategoryRoutes = require('../routes/subCategoryRoutes');
 const BlogcategoryRoutes = require('../routes/BlogcategoryRoutes');
 const childCategoryRoutes = require('../routes/childCategoryRoutes');
+
 const productRoutes = require('../routes/productRoutes');
+const listingproductroute = require('../routes/listingproductroute');
+
 const DigitalProductRoutes = require('../routes/DigitalProductRoutes');
 const postRoutes = require('../routes/postRoutes');
 const socialLinksRoutes = require('../routes/socialLinksRoutes');
@@ -53,6 +56,7 @@ app.use('/api/subcategories', subCategoryRoutes);
 app.use('/api/Blogcategories', BlogcategoryRoutes);
 app.use('/api/childcategories', childCategoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/listingproduct', listingproductroute);
 app.use('/api/Digitalproducts', DigitalProductRoutes);
 app.use('/api/posts', postRoutes); // Use post routes
 app.use('/api/social-links', socialLinksRoutes);
