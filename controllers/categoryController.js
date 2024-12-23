@@ -183,10 +183,19 @@ exports.updateCategoryAttribute = async (req, res) => {
 // Delete an attribute from a category
 exports.deleteCategoryAttribute = async (req, res) => {
   try {
-    const category = await Category.findById(req.params.categoryId);
-    category.attributes.id(req.params.attributeId).remove(); // Remove the attribute
-    await category.save();
-    res.status(200).json({ message: 'Attribute deleted successfully' });
+    const { categoryId, attributeId } = req.params;
+
+    const category = await Category.findById(categoryId);
+
+    // Find and remove the attribute by its ID
+    const attributeIndex = category.attributes.findIndex(attr => attr._id.toString() === attributeId);
+    if (attributeIndex !== -1) {
+      category.attributes.splice(attributeIndex, 1); // Remove the attribute
+      await category.save();
+      return res.status(200).json({ message: 'Attribute deleted successfully' });
+    }
+
+    return res.status(404).json({ message: 'Attribute not found' });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
