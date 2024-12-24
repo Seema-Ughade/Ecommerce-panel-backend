@@ -34,6 +34,8 @@ const customerRoutes = require('../routes/customerRoutes');
 const orderRoutes = require('../routes/orderRoutes');
 const subscriptionPlanRoutes = require("../routes/subscriptionPlanRoutes");
 const VendorRoutes = require('../routes/VendorRoutes')
+const offerRoutes = require('../routes/offerRoutes');
+const dealRoutes = require('../routes/dealRoutes');
 
 
 //rider
@@ -98,7 +100,9 @@ app.use("/api", subscriptionPlanRoutes);
 //rider
 app.use('/api/riders', riderRoutes);
 app.use('/api/auth', VendorRoutes)
+app.use('/api/offers', offerRoutes);
 
+app.use('/api/deals', dealRoutes);
 
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}`);

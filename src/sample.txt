@@ -1,0 +1,32 @@
+const multer = require('multer');
+
+// Use memory storage for uploading files
+const storage = multer.memoryStorage();
+
+// Set up multer to accept one file for the feature image and multiple files for the gallery images
+const upload = multer({ storage });
+
+// Export the upload middleware
+module.exports = upload;
+// cloudinaryConfig.js
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+  cloud_name: 'dlqh7mjvo',
+  api_key: '635988595974566',
+  api_secret: 'w4b0TQuewC32KiO0Q49lTq2pAwA',
+});
+
+module.exports = cloudinary;
+
+const DataUriParser = require("datauri/parser");
+const path = require("path");
+
+const getDataUri = (file) => {
+  const parser = new DataUriParser();
+  const extName = path.extname(file.originalname).toString();
+
+  return parser.format(extName, file.buffer);
+};
+
+module.exports = getDataUri;
