@@ -37,6 +37,7 @@ const VendorRoutes = require('../routes/VendorRoutes')
 const offerRoutes = require('../routes/offerRoutes');
 const dealRoutes = require('../routes/dealRoutes');
 
+const contactRoutes = require('../routes/contactRoutes');
 
 //rider
 const riderRoutes = require('../routes/riderRoutes');
@@ -96,6 +97,7 @@ app.use('/api', cityRoutes);
 app.use('/api/states', statesRoutes);
 app.use('/api/customers', customerRoutes);
 app.use("/api", subscriptionPlanRoutes);
+app.use('/api', contactRoutes);
 
 //rider
 app.use('/api/riders', riderRoutes);

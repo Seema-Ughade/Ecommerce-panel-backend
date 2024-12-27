@@ -49,6 +49,19 @@ exports.createPost = async (req, res) => {
   }
 };
 
+exports.getPostById = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate('category');
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    res.status(200).json(post);
+  } catch (error) {
+    console.error('Error fetching post:', error.message);
+    res.status(500).json({ message: 'Error fetching post', error });
+  }
+};
+
 // Fetch all posts
 exports.getPosts = async (req, res) => {
   try {
@@ -59,8 +72,49 @@ exports.getPosts = async (req, res) => {
     res.status(500).json({ message: 'Error fetching posts', error });
   }
 };
+exports.updatePost = async (req, res) => {
+  try {
+    const { title, category, description, source, tags } = req.body;
+    let updateData = { title, category, description, source, tags: tags.split(',') };
+
+    if (req.file) {
+      const fileUri = getDataUri(req.file).content;
+      const result = await cloudinary.uploader.upload(fileUri, {
+        resource_type: 'auto',
+      });
+      updateData.featureImage = result.secure_url;
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!updatedPost) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error('Error updating post:', error);
+    res.status(500).json({ message: 'Error updating post', error: error.message });
+  }
+};
+
+exports.deletePost = async (req, res) => {
+  try {
+    const deletedPost = await Post.findByIdAndDelete(req.params.id);
+    if (!deletedPost) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    res.status(200).json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).json({ message: 'Error deleting post', error: error.message });
+  }
+};
+
+
 
 module.exports = {
   createPost: exports.createPost,
   getPosts: exports.getPosts,
+  updatePost: exports.updatePost,
+  deletePost: exports.deletePost,
+  getPostById: exports.getPostById,
 };
