@@ -5,21 +5,29 @@ exports.createContact = async (req, res) => {
   try {
     const { name, phone, email, comment } = req.body;
 
-    // Validate input
-    if (!name || !phone || !email || !comment) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
+    const contact = new Contact({
+      name,
+      phone,
+      email,
+      comment
+    });
 
-    // Create and save contact
-    const newContact = new Contact({ name, phone, email, comment });
-    await newContact.save();
+    await contact.save();
 
-    res.status(201).json({ message: 'Contact created successfully', data: newContact });
+    res.status(201).json({ message: 'Contact message sent successfully', contact });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error. Please try again later.' });
+    if (error.name === 'ValidationError') {
+      const errors = {};
+      for (let field in error.errors) {
+        errors[field] = error.errors[field].message;
+      }
+      return res.status(400).json({ errors });
+    }
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+
 
 // Get all contacts
 exports.getContacts = async (req, res) => {

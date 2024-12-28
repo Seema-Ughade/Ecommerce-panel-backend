@@ -1,27 +1,29 @@
 const mongoose = require('mongoose');
 
-
-const ContactSchema = new mongoose.Schema({
+const contactSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, 'Name is required'],
+    trim: true
   },
   phone: {
     type: String,
-    required: true,
+    required: [true, 'Phone number is required'],
+    match: [/^\d{10}$/, 'Phone number must be 10 digits']
   },
   email: {
     type: String,
-    required: true,
-    match: [/^\S+@\S+\.\S+$/, 'Email is not valid'],
-
-    // Removed unique: true to allow multiple submissions from same email
+    required: [true, 'Email is required'],
+    match: [/\S+@\S+\.\S+/, 'Email is invalid'],
+    trim: true,
+    lowercase: true
   },
   comment: {
     type: String,
-    required: true,
+    required: [true, 'Comment is required'],
+    trim: true
   }
 }, { timestamps: true });
 
+module.exports = mongoose.model('Contact', contactSchema);
 
-module.exports = mongoose.model('Contact', ContactSchema);
