@@ -87,3 +87,53 @@ exports.loginVendor = async (req, res) => {
   }
 }
 
+
+
+exports.getAllVendors = async (req, res) => {
+  try {
+    const vendors = await Vendor.find();
+    res.status(200).json(vendors);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch vendors', error: error.message });
+  }
+};
+
+// Update a vendor by ID
+exports.updateVendor = async (req, res) => {
+  const { id } = req.params;
+  const { storeName, vendorEmail } = req.body;
+
+  try {
+    const updatedVendor = await Vendor.findByIdAndUpdate(
+      id,
+      { storeName, vendorEmail },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedVendor) {
+      return res.status(404).json({ message: 'Vendor not found' });
+    }
+
+    res.status(200).json({ message: 'Vendor updated successfully', vendor: updatedVendor });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update vendor', error: error.message });
+  }
+};
+
+// Delete a vendor by ID
+exports.deleteVendor = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedVendor = await Vendor.findByIdAndDelete(id);
+
+    if (!deletedVendor) {
+      return res.status(404).json({ message: 'Vendor not found' });
+    }
+
+    res.status(200).json({ message: 'Vendor deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete vendor', error: error.message });
+  }
+};
+
