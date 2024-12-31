@@ -36,11 +36,14 @@ const subscriptionPlanRoutes = require("../routes/subscriptionPlanRoutes");
 const VendorRoutes = require('../routes/VendorRoutes')
 const offerRoutes = require('../routes/offerRoutes');
 const dealRoutes = require('../routes/dealRoutes');
+const affiliateproductRoutes = require('../routes/affiliateproductRoutes');
 
 const contactRoutes = require('../routes/contactRoutes');
 
 //rider
 const riderRoutes = require('../routes/riderRoutes');
+const Uiorderroutes = require('../routes/Uiorderroutes');
+const countryRoutes = require('../routes/countryRoutes');
 
 
 dotenv.config();
@@ -105,6 +108,9 @@ app.use('/api/auth', VendorRoutes)
 app.use('/api/offers', offerRoutes);
 
 app.use('/api/deals', dealRoutes);
+app.use('/api/affiliateproduct', affiliateproductRoutes);
+app.use('/api/Uiorder', Uiorderroutes);
+app.use('/api/countries', countryRoutes);
 
 app.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}`);
